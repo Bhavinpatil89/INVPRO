@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HQ Dashboard - INVPRO</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio&preflight=true"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1', 800: '#075985', 900: '#0c4a6e' },
+                        accent: { 50: '#fdf4ff', 100: '#fae8ff', 200: '#f5d0fe', 300: '#f0abfc', 400: '#e879f9', 500: '#d946ef', 600: '#c026d3', 700: '#a21caf', 800: '#86198f', 900: '#701a75' }
+                    },
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], display: ['Outfit', 'Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-strong {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+        }
+
+        .dark .glass-strong {
+            background: rgba(15, 23, 42, 0.9);
+        }
+
+        .bento-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .dark .bento-card {
+            background: rgba(15, 23, 42, 0.7);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .bento-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            background: white;
+            border-color: rgba(14, 165, 233, 0.3);
+        }
+
+        .dark .bento-card:hover {
+            background: #1e293b;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #475569;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(to right, #0ea5e9, #d946ef);
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .time-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+        }
+
+        .dark .time-btn {
+            background-color: #1e293b;
+            border-color: #334155;
+            color: #94a3b8;
+        }
+
+        .time-btn.active {
+            background: linear-gradient(to right, #0ea5e9, #d946ef);
+            color: white;
+            border: transparent;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #0ea5e9 0%, #d946ef 100%);
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 min-h-screen">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-64 glass-strong border-r border-slate-200/50 dark:border-slate-800/50 flex flex-col">
+            <div class="p-6 border-b border-slate-200/50 dark:border-slate-800/50">
+                <a href="/" class="nav-logo group">
+                    <div class="logo-icon group-hover:scale-110 transition-transform">📦</div>
+                    <span
+                        class="text-2xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+                        style="font-family: 'Outfit';">INVPRO</span>
+                </a>
+                <p id="ctx-chain-name" class="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-2">...
+                </p>
+            </div>
+            <nav id="sidebar-nav" class="flex-1 p-4 space-y-1 overflow-y-auto">
+                <!-- Nav Items injected via JS -->
+            </nav>
+            <div class="p-4 border-t border-slate-200/50 dark:border-slate-800/50">
+                <div class="flex items-center gap-3 mb-3">
+                    <div id="user-avatar"
+                        class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                        ?</div>
+                    <div class="flex-1 min-w-0">
+                        <p id="ctx-username" class="text-sm font-bold text-slate-900 dark:text-white truncate">
+                            Loading...</p>
+                        <p id="ctx-role" class="text-xs text-slate-500 truncate">...</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="toggleTheme()"
+                        class="flex-1 px-3 py-2 text-xs font-bold rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition-colors"><i
+                            class="bi bi-moon-stars-fill dark:hidden"></i><i
+                            class="bi bi-sun-fill hidden dark:inline text-white"></i></button>
+                    <a href="/auth/logout"
+                        class="flex-1 px-3 py-2 text-xs font-bold rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 transition-colors text-center"><i
+                            class="bi bi-box-arrow-right"></i></a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <header
+                class="glass-strong border-b border-slate-200/50 dark:border-slate-800/50 px-8 py-4 flex items-center justify-between sticky top-0 z-50">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 dark:text-white" style="font-family: 'Outfit';">Main
+                        Office Dashboard</h2>
+                    <p class="text-sm text-slate-500">Sales and performance summary of all shops</p>
+                </div>
+                <div class="text-right">
+                    <p id="ctx-store-label" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Business HQ</p>
+                    <p id="ctx-store-name" class="text-sm font-bold text-slate-900 dark:text-white">...</p>
+                </div>
+            </header>
+
+            <div class="p-8 space-y-6">
+                <!-- Dashboard Content -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+                        <select id="scopeSelector" onchange="loadDashboardData()"
+                            class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-bold focus:ring-2 focus:ring-blue-500 shadow-sm">
+                            <option value="">All Branches</option>
+                        </select>
+                        <div class="w-px h-8 bg-slate-200 dark:bg-slate-700 mx-1"></div>
+                        <button onclick="setTimeRange('day')" class="time-btn px-4 py-2 rounded-lg text-sm font-bold"
+                            data-range="day">Today</button>
+                        <button onclick="setTimeRange('week')" class="time-btn px-4 py-2 rounded-lg text-sm font-bold"
+                            data-range="week">Week</button>
+                        <button onclick="setTimeRange('month')"
+                            class="time-btn active px-4 py-2 rounded-lg text-sm font-bold bg-blue-600 text-white"
+                            data-range="month">Month</button>
+                        <button onclick="setTimeRange('year')" class="time-btn px-4 py-2 rounded-lg text-sm font-bold"
+                            data-range="year">Year</button>
+                    </div>
+                    <button onclick="exportDashboard()"
+                        class="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all">
+                        <i class="bi bi-download"></i> Export Report
+                    </button>
+                </div>
+
+                <!-- KPIs -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bento-card group hover:scale-105">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white text-xl shadow-lg mb-4">
+                            <i class="bi bi-currency-rupee"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Total Revenue</h3>
+                        <p class="text-3xl font-black text-slate-900 dark:text-white" id="total-revenue">₹0</p>
+                    </div>
+                    <div class="bento-card group hover:scale-105">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xl shadow-lg mb-4">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Net Profit</h3>
+                        <p class="text-3xl font-black text-slate-900 dark:text-white" id="total-profit">₹0</p>
+                    </div>
+                    <div class="bento-card group hover:scale-105">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white text-xl shadow-lg mb-4">
+                            <i class="bi bi-boxes"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Total Assets</h3>
+                        <p class="text-3xl font-black text-slate-900 dark:text-white" id="inventory-value">₹0</p>
+                    </div>
+                    <div class="bento-card group hover:scale-105">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white text-xl shadow-lg mb-4">
+                            <i class="bi bi-building"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Branches</h3>
+                        <p class="text-3xl font-black text-slate-900 dark:text-white" id="branch-count">0</p>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bento-card">
+                        <h3 class="text-lg font-bold mb-6">Sales Trend</h3>
+                        <div id="salesChartContainer" class="h-64 relative w-full"><canvas id="salesChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bento-card">
+                        <h3 class="text-lg font-bold mb-6">Profit Analysis</h3>
+                        <div id="profitChartContainer" class="h-64 relative w-full"><canvas id="profitChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparison -->
+                <div class="bento-card">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-bold">Branch Comparison</h3>
+                        <div class="flex gap-2">
+                            <button onclick="setComparisonTimeRange('month')"
+                                class="comparison-time-btn active px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white">Month</button>
+                            <button onclick="setComparisonTimeRange('year')"
+                                class="comparison-time-btn px-3 py-1.5 rounded-lg text-xs font-bold">Year</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                        <div id="comparison-checkboxes"
+                            class="lg:col-span-1 border-r border-slate-100 dark:border-slate-800 pr-4 space-y-2 max-h-[300px] overflow-y-auto">
+                        </div>
+                        <div class="lg:col-span-3 h-[400px] relative"><canvas id="comparisonChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Branch Table -->
+                <div class="bento-card">
+                    <h3 class="text-lg font-bold mb-6">Branch Performance List</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="border-b border-slate-100 dark:border-slate-800">
+                                <tr class="text-left py-3 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                    <th class="py-3 px-4">Branch</th>
+                                    <th class="py-3 px-4 text-right">Revenue</th>
+                                    <th class="py-3 px-4 text-right">Profit</th>
+                                    <th class="py-3 px-4 text-right">Stock Value</th>
+                                </tr>
+                            </thead>
+                            <tbody id="branch-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal fade" id="appAlertModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-2xl rounded-[2rem] dark:bg-slate-900 p-8 text-center">
+                <div id="appAlertIconContainer" class="mb-4"><i id="appAlertIcon" class="bi text-2xl"></i></div>
+                <h3 id="appAlertTitle" class="text-lg font-black uppercase mb-2">Alert</h3>
+                <p id="appAlertMessage" class="text-sm text-slate-500 mb-6"></p><button type="button"
+                    class="w-full py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-bold text-xs uppercase"
+                    data-bs-dismiss="modal">Acknowledge</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // System JS
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            html.classList.remove(isDark ? 'dark' : 'light');
+            html.classList.add(isDark ? 'light' : 'dark');
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+        }
+
+        let SESSION_DATA = {};
+        async function loadSessionContext() {
+            try {
+                const res = await fetch('/api/session-context');
+                const ctx = await res.json();
+                SESSION_DATA = ctx;
+                document.getElementById('ctx-chain-name').textContent = ctx.store_name || ctx.chain_name || 'INVPRO';
+                document.getElementById('ctx-username').textContent = ctx.username;
+                document.getElementById('ctx-role').textContent = ctx.role === 'business_admin' ? 'HQ Admin' : ctx.role === 'branch_admin' ? 'Manager' : 'Staff';
+                document.getElementById('user-avatar').textContent = ctx.username[0].toUpperCase();
+                document.getElementById('ctx-store-name').textContent = ctx.store_name || 'HQ';
+                renderSidebar(ctx.role);
+            } catch (e) { console.error(e); }
+        }
+
+        function renderSidebar(role) {
+            const nav = document.getElementById('sidebar-nav');
+            const path = window.location.pathname;
+
+            let menu = [];
+            if (role === 'business_admin') {
+                menu = [
+                    { name: 'Home', icon: 'bi-grid-fill', url: '/' },
+                    { name: 'Master Product List', icon: 'bi-box-seam-fill', url: '/inventory/global' },
+                    { name: 'Product Categories', icon: 'bi-tags-fill', url: '/inventory/categories' },
+                    { name: 'Shops & Branches', icon: 'bi-building', url: '/settings/' },
+                    { name: 'Tax Rates', icon: 'bi-percent', url: '/settings/tax' },
+                    { name: 'Staff Users', icon: 'bi-people-fill', url: '/users/' },
+                    { name: 'Sales Reports', icon: 'bi-graph-up', url: '/sales/reports' },
+
+                ];
+            } else if (role === 'branch_admin') {
+                menu = [
+                    { name: 'Home', icon: 'bi-grid-fill', url: '/' },
+                    { name: 'Shop Stock', icon: 'bi-box-seam', url: '/inventory/products' },
+
+                    { name: 'Billing Counter', icon: 'bi-cart4', url: '/billing/' },
+                    { name: 'My Team', icon: 'bi-people', url: '/users/' },
+                    { name: 'Reports', icon: 'bi-graph-up', url: '/sales/reports' }
+                ];
+            } else {
+                menu = [
+                    { name: 'Billing Counter', icon: 'bi-cart4', url: '/billing/' },
+                    { name: 'Check Stock', icon: 'bi-eye', url: '/inventory/products' }
+                ];
+            }
+
+            nav.innerHTML = menu.map(item => {
+                const isActive = (path === item.url) || (item.url === '/' && (path === '/dashboard' || path === '/store-dashboard'));
+                return `
+                    <a href="${item.url}" class="nav-item ${isActive ? 'active' : ''}">
+                        <i class="bi ${item.icon}"></i>
+                        <span>${item.name}</span>
+                    </a>
+                `;
+            }).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.classList.add(theme);
+            loadSessionContext();
+            loadDashboardData();
+        });
+
+        // Dashboard JS
+        let currentTimeRange = 'month';
+        let comparisonTimeRange = 'month';
+        let availableBranches = [];
+        let salesChartInstance, profitChartInstance, comparisonChartInstance;
+
+        function setTimeRange(range) {
+            currentTimeRange = range;
+            document.querySelectorAll('.time-btn').forEach(btn => btn.classList.remove('active', 'bg-blue-600', 'text-white'));
+            document.querySelector(`[data-range="${range}"]`).classList.add('active', 'bg-blue-600', 'text-white');
+            loadDashboardData();
+        }
+
+        async function loadDashboardData() {
+            try {
+                const scopeId = document.getElementById('scopeSelector').value;
+                const scopeParam = scopeId ? `&branch=${scopeId}` : '';
+                const res = await fetch(`/sales/api/analytics?filter=${currentTimeRange}${scopeParam}`);
+                const data = await res.json();
+
+                document.getElementById('total-revenue').textContent = `₹${(data.revenue || 0).toLocaleString()}`;
+                document.getElementById('total-profit').textContent = `₹${(data.profit || 0).toLocaleString()}`;
+                document.getElementById('inventory-value').textContent = `₹${(data.inventory_value || 0).toLocaleString()}`;
+                document.getElementById('branch-count').textContent = data.branch_count || 0;
+
+                const tbody = document.getElementById('branch-table');
+                if (data.branches) {
+                    if (availableBranches.length === 0) {
+                        availableBranches = data.branches;
+                        const sel = document.getElementById('scopeSelector');
+                        availableBranches.forEach(b => sel.innerHTML += `<option value="${b.id}">${b.name}</option>`);
+                        populateComparisonCheckboxes();
+                        updateComparisonChart();
+                    }
+                    tbody.innerHTML = data.branches.map(b => `<tr class="border-b border-slate-50 dark:border-slate-800 cursor-pointer hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors" onclick="selectBranch('${b.id}')">
+                        <td class="px-4 py-3 font-bold">${b.name}</td>
+                        <td class="px-4 py-3 text-right">₹${(b.revenue || 0).toLocaleString()}</td>
+                        <td class="px-4 py-3 text-right text-green-600">₹${(b.profit || 0).toLocaleString()}</td>
+                        <td class="px-4 py-3 text-right">₹${(b.stock_value || 0).toLocaleString()}</td>
+                    </tr>`).join('');
+                }
+
+                const chartRes = await fetch(`/sales/api/charts?filter=${currentTimeRange}${scopeParam}`);
+                updateCharts(await chartRes.json());
+            } catch (e) { console.error(e); }
+        }
+
+        function updateCharts(data) {
+            if (salesChartInstance) salesChartInstance.destroy();
+            salesChartInstance = new Chart(document.getElementById('salesChart'), {
+                type: 'line',
+                data: { labels: data.labels, datasets: [{ label: 'Revenue', data: data.revenue, borderColor: '#3b82f6', tension: 0.4, fill: true, backgroundColor: 'rgba(59, 130, 246, 0.1)' }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            if (profitChartInstance) profitChartInstance.destroy();
+            profitChartInstance = new Chart(document.getElementById('profitChart'), {
+                type: 'bar',
+                data: { labels: data.labels, datasets: [{ label: 'Profit', data: data.profit, backgroundColor: '#d946ef' }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
+
+        function populateComparisonCheckboxes() {
+            document.getElementById('comparison-checkboxes').innerHTML = availableBranches.map(b => `
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="cb-${b.id}" value="${b.id}" checked onchange="updateComparisonChart()" class="w-4 h-4 rounded text-blue-600">
+                    <label for="cb-${b.id}" class="text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:text-blue-600" onclick="selectBranch('${b.id}')">${b.name}</label>
+                </div>
+            `).join('');
+        }
+
+        async function updateComparisonChart() {
+            const ids = Array.from(document.querySelectorAll('#comparison-checkboxes input:checked')).map(c => c.value).join(',');
+            const res = await fetch(`/sales/api/comparison?branches=${ids}&time_filter=${comparisonTimeRange}`);
+            const data = await res.json();
+            if (comparisonChartInstance) comparisonChartInstance.destroy();
+            comparisonChartInstance = new Chart(document.getElementById('comparisonChart'), {
+                type: 'line',
+                data: { labels: data.labels, datasets: data.datasets },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        function setComparisonTimeRange(range) {
+            comparisonTimeRange = range;
+            document.querySelectorAll('.comparison-time-btn').forEach(b => b.classList.remove('active', 'bg-blue-600', 'text-white'));
+            event.target.classList.add('active', 'bg-blue-600', 'text-white');
+            updateComparisonChart();
+        }
+
+        function selectBranch(id) {
+            const sel = document.getElementById('scopeSelector');
+            sel.value = id;
+            loadDashboardData();
+            // Scroll to top to see data change
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - INVPRO</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio&preflight=true"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1', 800: '#075985', 900: '#0c4a6e' },
+                        accent: { 50: '#fdf4ff', 100: '#fae8ff', 200: '#f5d0fe', 300: '#f0abfc', 400: '#e879f9', 500: '#d946ef', 600: '#c026d3', 700: '#a21caf', 800: '#86198f', 900: '#701a75' }
+                    },
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], display: ['Outfit', 'Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-strong {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+        }
+
+        .dark .glass-strong {
+            background: rgba(15, 23, 42, 0.9);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #475569;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(to right, #0ea5e9, #d946ef);
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #0ea5e9 0%, #d946ef 100%);
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .bento-card {
+            background: white;
+            border-radius: 1.5rem;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark .bento-card {
+            background: #0f172a;
+            border-color: #1e293b;
+        }
+
+        .bento-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            background: white;
+            border-color: rgba(14, 165, 233, 0.3);
+        }
+
+        .dark .bento-card:hover {
+            background: #1e293b;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 min-h-screen">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-64 glass-strong border-r border-slate-200/50 dark:border-slate-800/50 flex flex-col">
+            <div class="p-6 border-b border-slate-200/50 dark:border-slate-800/50">
+                <a href="/" class="nav-logo group">
+                    <div class="logo-icon group-hover:scale-110 transition-transform">📦</div>
+                    <span
+                        class="text-2xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+                        style="font-family: 'Outfit';">INVPRO</span>
+                </a>
+                <p id="ctx-chain-name" class="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-2">...
+                </p>
+            </div>
+            <nav id="sidebar-nav" class="flex-1 p-4 space-y-1 overflow-y-auto">
+                <!-- Nav Items injected via JS -->
+            </nav>
+            <div class="p-4 border-t border-slate-200/50 dark:border-slate-800/50">
+                <div class="flex items-center gap-3 mb-3">
+                    <div id="user-avatar"
+                        class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                        ?</div>
+                    <div class="flex-1 min-w-0">
+                        <p id="ctx-username" class="text-sm font-bold text-slate-900 dark:text-white truncate">
+                            Loading...</p>
+                        <p id="ctx-role" class="text-xs text-slate-500 truncate">...</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="toggleTheme()"
+                        class="flex-1 px-3 py-2 text-xs font-bold rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition-colors"><i
+                            class="bi bi-moon-stars-fill dark:hidden"></i><i
+                            class="bi bi-sun-fill hidden dark:inline text-white"></i></button>
+                    <a href="/auth/logout"
+                        class="flex-1 px-3 py-2 text-xs font-bold rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 transition-colors text-center"><i
+                            class="bi bi-box-arrow-right"></i></a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <header
+                class="glass-strong border-b border-slate-200/50 dark:border-slate-800/50 px-8 py-4 flex items-center justify-between sticky top-0 z-50">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 dark:text-white" style="font-family: 'Outfit';">User
+                        Management</h2>
+                    <p class="text-sm text-slate-500">Manage team members and access control</p>
+                </div>
+                <div class="text-right">
+                    <p id="ctx-store-label" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Enterprise</p>
+                    <p id="ctx-store-name" class="text-sm font-bold text-slate-900 dark:text-white">...</p>
+                </div>
+            </header>
+
+            <div class="p-8 space-y-6">
+                <!-- Action Bar -->
+                <div
+                    class="flex items-center justify-between bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800">
+                    <div class="flex items-center gap-3">
+                        <div class="relative">
+                            <input type="text" id="searchInput" placeholder="Search team..."
+                                class="w-80 pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm font-bold">
+                            <i class="bi bi-search absolute left-3 top-3 text-slate-400"></i>
+                        </div>
+                        <select id="branchFilter"
+                            class="hidden px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold uppercase">
+                            <option value="">All Branches</option>
+                        </select>
+                    </div>
+                    <button onclick="openAddModal()"
+                        class="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-xs flex items-center gap-2 shadow-lg shadow-indigo-600/20"><i
+                            class="bi bi-person-plus-fill"></i> ADD OPERATIVE</button>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bento-card p-6 flex items-center gap-4">
+                        <div
+                            class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-xl">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase">Total Users</p>
+                            <h3 id="total-users" class="text-2xl font-black">0</h3>
+                        </div>
+                    </div>
+                    <div class="bento-card p-6 flex items-center gap-4">
+                        <div
+                            class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center text-xl">
+                            <i class="bi bi-shield-fill-check"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase">Managers</p>
+                            <h3 id="total-managers" class="text-2xl font-black">0</h3>
+                        </div>
+                    </div>
+                    <div class="bento-card p-6 flex items-center gap-4">
+                        <div
+                            class="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-xl">
+                            <i class="bi bi-person-badge-fill"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase">Staff</p>
+                            <h3 id="total-staff" class="text-2xl font-black">0</h3>
+                        </div>
+                    </div>
+                    <div class="bento-card p-6 flex items-center gap-4">
+                        <div
+                            class="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center text-xl">
+                            <i class="bi bi-building"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase">Branches</p>
+                            <h3 id="total-branches" class="text-2xl font-black">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="bento-card overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead
+                                class="bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800">
+                                <tr class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                    <th class="px-8 py-5">Identifer</th>
+                                    <th class="px-8 py-5">Gender</th>
+                                    <th class="px-8 py-5">Security Role</th>
+                                    <th class="px-8 py-5">Allocation</th>
+                                    <th class="px-8 py-5 text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table" class="divide-y divide-slate-50 dark:divide-slate-800"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-6 right-6 z-[9999] hidden">
+        <div id="toast-content"
+            class="px-6 py-4 rounded-2xl shadow-2xl font-bold text-sm flex items-center gap-3 min-w-[300px] max-w-[450px]">
+            <i id="toast-icon" class="bi text-lg"></i>
+            <span id="toast-msg"></span>
+        </div>
+    </div>
+
+    <!-- User Modal -->
+    <div class="modal fade" id="userModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-2xl rounded-3xl dark:bg-slate-900">
+                <div class="bg-indigo-600 p-8 text-white rounded-t-3xl">
+                    <h3 id="modal-title" class="text-2xl font-black">Add User</h3>
+                    <p class="text-sm opacity-80">Configure access credentials</p>
+                </div>
+                <form id="userForm" class="p-8 space-y-5">
+                    <input type="hidden" id="user-id">
+                    <div><label
+                            class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block">Username</label><input
+                            type="text" id="user-username" required
+                            class="w-full px-4 py-3 rounded-xl border bg-slate-50 dark:bg-slate-800 font-bold"></div>
+                    <div id="password-field"><label
+                            class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block">Security
+                            Key</label><input type="password" id="user-password"
+                            class="w-full px-4 py-3 rounded-xl border bg-slate-50 dark:bg-slate-800 font-bold"></div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label
+                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block">Gender</label>
+                            <select id="user-gender"
+                                class="w-full px-4 py-3 rounded-xl border bg-slate-50 dark:bg-slate-800 font-bold">
+                                <option value="">N/A</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div><label
+                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block">Role</label>
+                            <select id="user-role" required
+                                class="w-full px-4 py-3 rounded-xl border bg-slate-50 dark:bg-slate-800 font-bold">
+                                <option value="branch_staff">Staff</option>
+                                <option id="mgr-opt" value="branch_admin">Manager</option>
+                                <option id="admin-opt" value="business_admin" class="hidden">HQ Administrator</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="branch-select-div" class="hidden"><label
+                            class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block">Allocation</label>
+                        <select id="user-branch"
+                            class="w-full px-4 py-3 rounded-xl border bg-slate-50 dark:bg-slate-800 font-bold">
+                            <option value="">Headquarters (HQ)</option>
+                        </select>
+                    </div>
+                    <div class="flex gap-4 pt-4">
+                        <button type="button" class="flex-1 py-3 font-bold text-slate-400"
+                            data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit"
+                            class="flex-[2] py-3 bg-indigo-600 text-white rounded-xl font-bold uppercase tracking-widest shadow-lg shadow-indigo-600/20">Authorize
+                            Operative</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteUserModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-2xl rounded-3xl dark:bg-slate-900 p-8 text-center">
+                <div
+                    class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                    <i class="bi bi-shield-slash"></i>
+                </div>
+                <h3 class="text-xl font-black">Revoke Access?</h3>
+                <p class="text-xs text-slate-500 my-4">This user will be purged from the system instantly.</p>
+                <div class="flex gap-3">
+                    <button class="flex-1 py-2 text-xs font-bold" data-bs-dismiss="modal">Keep</button>
+                    <button id="confirmDeleteUserBtn"
+                        class="flex-1 py-2 bg-red-600 text-white rounded-lg text-xs font-black uppercase">Purge</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            html.classList.remove(isDark ? 'dark' : 'light');
+            html.classList.add(isDark ? 'light' : 'dark');
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+        }
+
+        let GLOBAL_CTX = null;
+        let SESSION_DATA = {};
+        async function loadSessionContext() {
+            try {
+                const res = await fetch('/api/session-context');
+                const ctx = await res.json();
+                SESSION_DATA = ctx;
+                GLOBAL_CTX = ctx;
+                document.getElementById('ctx-chain-name').textContent = ctx.store_name || ctx.chain_name || 'INVPRO';
+                document.getElementById('ctx-username').textContent = ctx.username;
+                document.getElementById('ctx-role').textContent = ctx.role === 'business_admin' ? 'HQ Admin' : (ctx.role === 'branch_admin' ? 'Manager' : 'Staff');
+                document.getElementById('user-avatar').textContent = ctx.username[0].toUpperCase();
+                document.getElementById('ctx-store-name').textContent = ctx.store_name || 'HQ';
+                renderSidebar(ctx.role);
+
+                if (ctx.role === 'business_admin') {
+                    document.getElementById('branchFilter').classList.remove('hidden');
+                    document.getElementById('branch-select-div').classList.remove('hidden');
+                    document.getElementById('admin-opt').classList.remove('hidden');
+                    await loadBranches();
+                }
+
+                loadUsers();
+            } catch (e) { console.error(e); }
+        }
+
+        function renderSidebar(role) {
+            const nav = document.getElementById('sidebar-nav');
+            const path = window.location.pathname;
+
+            let menu = [];
+            if (role === 'business_admin') {
+                menu = [
+                    { name: 'Home', icon: 'bi-grid-fill', url: '/' },
+                    { name: 'Master Product List', icon: 'bi-box-seam-fill', url: '/inventory/global' },
+                    { name: 'Product Categories', icon: 'bi-tags-fill', url: '/inventory/categories' },
+                    { name: 'Shops & Branches', icon: 'bi-building', url: '/settings/' },
+                    { name: 'Tax Rates', icon: 'bi-percent', url: '/settings/tax' },
+                    { name: 'Staff Users', icon: 'bi-people-fill', url: '/users/' },
+                    { name: 'Sales Reports', icon: 'bi-graph-up', url: '/sales/reports' },
+                ];
+            } else if (role === 'branch_admin') {
+                menu = [
+                    { name: 'Home', icon: 'bi-grid-fill', url: '/' },
+                    { name: 'Shop Stock', icon: 'bi-box-seam', url: '/inventory/products' },
+                    { name: 'Billing Counter', icon: 'bi-cart4', url: '/billing/' },
+                    { name: 'My Team', icon: 'bi-people', url: '/users/' },
+                    { name: 'Reports', icon: 'bi-graph-up', url: '/sales/reports' }
+                ];
+            } else {
+                menu = [
+                    { name: 'Billing Counter', icon: 'bi-cart4', url: '/billing/' },
+                    { name: 'Check Stock', icon: 'bi-eye', url: '/inventory/products' }
+                ];
+            }
+
+            nav.innerHTML = menu.map(item => {
+                const isActive = (path === item.url) || (item.url === '/' && (path === '/dashboard' || path === '/store-dashboard'));
+                return `
+                    <a href="${item.url}" class="nav-item ${isActive ? 'active' : ''}">
+                        <i class="bi ${item.icon}"></i>
+                        <span>${item.name}</span>
+                    </a>
+                `;
+            }).join('');
+        }
+
+        let users = [], branches = [];
+        async function loadBranches() {
+            const res = await fetch('/settings/api/branches');
+            branches = await res.json();
+            const filter = document.getElementById('branchFilter');
+            const select = document.getElementById('user-branch');
+            branches.forEach(b => {
+                const opt = `<option value="${b.id}">${b.name}</option>`;
+                filter.innerHTML += opt;
+                select.innerHTML += opt;
+            });
+        }
+
+        async function loadUsers() {
+            const res = await fetch('/users/api/users');
+            users = await res.json();
+            renderUsers();
+            updateStats();
+        }
+
+        function renderUsers() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const branch = document.getElementById('branchFilter')?.value;
+            const tbody = document.getElementById('users-table');
+
+            tbody.innerHTML = users.filter(u => u.username.toLowerCase().includes(search) && (!branch || u.store_id == branch)).map(u => `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                    <td class="px-8 py-5">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-black text-indigo-600">${u.username.substring(0, 2).toUpperCase()}</div>
+                            <span class="font-black">${u.username}</span>
+                        </div>
+                    </td>
+                    <td class="px-8 py-5 text-xs font-bold text-slate-500">${u.gender || 'N/A'}</td>
+                    <td class="px-8 py-5"><span class="px-2 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[10px] font-black uppercase tracking-widest font-bold">${u.role === 'business_admin' ? 'HQ Admin' : (u.role === 'branch_admin' ? 'Manager' : 'Staff')}</span></td>
+                    <td class="px-8 py-5 text-xs font-bold text-slate-600">${u.store_name || 'HQ'}</td>
+                    <td class="px-8 py-5">
+                        <div class="flex justify-center gap-2">
+                            ${u.role !== 'business_admin' ? `<button onclick="editUser(${u.id})" class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg"><i class="bi bi-pencil"></i></button>
+                            <button onclick="deleteUser(${u.id})" class="p-2 text-red-600 hover:bg-red-50 rounded-lg"><i class="bi bi-trash"></i></button>` : '<span class="text-[9px] font-black uppercase text-slate-300">Protected</span>'}
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateStats() {
+            const active = users; // Calculation for all visible users
+            document.getElementById('total-users').textContent = active.length;
+            document.getElementById('total-managers').textContent = active.filter(u => u.role === 'branch_admin').length;
+            document.getElementById('total-staff').textContent = active.filter(u => u.role === 'branch_staff').length;
+            document.getElementById('total-branches').textContent = GLOBAL_CTX.role === 'business_admin' ? new Set(active.filter(u => u.store_id).map(u => u.store_id)).size : 1;
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const content = document.getElementById('toast-content');
+            const icon = document.getElementById('toast-icon');
+            const msg = document.getElementById('toast-msg');
+            content.className = `px-6 py-4 rounded-2xl shadow-2xl font-bold text-sm flex items-center gap-3 min-w-[300px] max-w-[450px] ${isError ? 'bg-red-600 text-white' : 'bg-green-600 text-white'}`;
+            icon.className = `bi text-lg ${isError ? 'bi-exclamation-triangle-fill' : 'bi-check-circle-fill'}`;
+            msg.textContent = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 4000);
+        }
+
+        function openAddModal() {
+            // Guard: HQ must have at least one branch before adding users
+            if (GLOBAL_CTX && GLOBAL_CTX.role === 'business_admin' && branches.length === 0) {
+                showToast('You need to create at least one Branch first! Go to Shops & Branches in Settings.', true);
+                return;
+            }
+            document.getElementById('modal-title').textContent = 'Add Operative';
+            document.getElementById('userForm').reset();
+            document.getElementById('user-id').value = '';
+            new bootstrap.Modal(document.getElementById('userModal')).show();
+        }
+
+        function editUser(id) {
+            const u = users.find(x => x.id === id);
+            document.getElementById('modal-title').textContent = 'Edit Operative';
+            document.getElementById('user-id').value = u.id;
+            document.getElementById('user-username').value = u.username;
+            document.getElementById('user-gender').value = u.gender || '';
+            document.getElementById('user-role').value = u.role;
+            if (GLOBAL_CTX.role === 'business_admin') document.getElementById('user-branch').value = u.store_id || '';
+            new bootstrap.Modal(document.getElementById('userModal')).show();
+        }
+
+        function deleteUser(id) {
+            window.userToDelete = id;
+            new bootstrap.Modal(document.getElementById('deleteUserModal')).show();
+        }
+
+        document.getElementById('confirmDeleteUserBtn').onclick = async () => {
+            try {
+                const res = await fetch(`/users/api/users/${window.userToDelete}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (!res.ok || data.error) {
+                    showToast(data.error || 'Failed to delete user.', true);
+                } else {
+                    showToast('User removed successfully!');
+                    setTimeout(() => location.reload(), 1000);
+                }
+            } catch (err) {
+                showToast('Network error. Please try again.', true);
+            }
+            bootstrap.Modal.getInstance(document.getElementById('deleteUserModal'))?.hide();
+        }
+
+        document.getElementById('userForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('user-id').value;
+            const storeVal = GLOBAL_CTX.role === 'business_admin' ? document.getElementById('user-branch').value : GLOBAL_CTX.store_id;
+
+            const data = {
+                username: document.getElementById('user-username').value,
+                gender: document.getElementById('user-gender').value || null,
+                role: document.getElementById('user-role').value,
+                store_id: storeVal ? parseInt(storeVal) : null
+            };
+            const pw = document.getElementById('user-password').value;
+            if (!id && !pw) {
+                showToast('Password is required for new users.', true);
+                return;
+            }
+            if (pw) data.password = pw;
+
+            try {
+                const res = await fetch(id ? `/users/api/users/${id}` : '/users/api/users', {
+                    method: id ? 'PUT' : 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (!res.ok || result.error) {
+                    showToast(result.error || 'Operation failed.', true);
+                } else {
+                    showToast(id ? 'User updated successfully!' : 'User created successfully!');
+                    setTimeout(() => location.reload(), 1000);
+                }
+            } catch (err) {
+                showToast('Network error. Please try again.', true);
+            }
+            bootstrap.Modal.getInstance(document.getElementById('userModal'))?.hide();
+        }
+
+        document.getElementById('searchInput').addEventListener('input', renderUsers);
+        document.getElementById('branchFilter')?.addEventListener('change', renderUsers);
+        document.addEventListener('DOMContentLoaded', () => {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.classList.add(theme);
+            loadSessionContext();
+        });
+    </script>
+</body>
+
+</html>

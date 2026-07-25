@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports Center - INVPRO</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio&preflight=true"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1', 800: '#075985', 900: '#0c4a6e' },
+                        accent: { 50: '#fdf4ff', 100: '#fae8ff', 200: '#f5d0fe', 300: '#f0abfc', 400: '#e879f9', 500: '#d946ef', 600: '#c026d3', 700: '#a21caf', 800: '#86198f', 900: '#701a75' }
+                    },
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], display: ['Outfit', 'Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-strong {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+        }
+
+        .dark .glass-strong {
+            background: rgba(15, 23, 42, 0.9);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #475569;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(to right, #0ea5e9, #d946ef);
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #0ea5e9 0%, #d946ef 100%);
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .bento-card {
+            background: white;
+            border-radius: 1.5rem;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark .bento-card {
+            background: #0f172a;
+            border-color: #1e293b;
+        }
+
+        .bento-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            background: white;
+            border-color: rgba(14, 165, 233, 0.3);
+        }
+
+        .dark .bento-card:hover {
+            background: #1e293b;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 min-h-screen">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-64 glass-strong border-r border-slate-200/50 dark:border-slate-800/50 flex flex-col">
+            <div class="p-6 border-b border-slate-200/50 dark:border-slate-800/50">
+                <a href="/" class="nav-logo group">
+                    <div class="logo-icon group-hover:scale-110 transition-transform">📦</div>
+                    <span
+                        class="text-2xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+                        style="font-family: 'Outfit';">INVPRO</span>
+                </a>
+                <p id="ctx-chain-name" class="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-2">...
+                </p>
+            </div>
+            <nav id="sidebar-nav" class="flex-1 p-4 space-y-1 overflow-y-auto">
+                <!-- Nav Items injected via JS -->
+            </nav>
+            <div class="p-4 border-t border-slate-200/50 dark:border-slate-800/50">
+                <div class="flex items-center gap-3 mb-3">
+                    <div id="user-avatar"
+                        class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                        ?</div>
+                    <div class="flex-1 min-w-0">
+                        <p id="ctx-username" class="text-sm font-bold text-slate-900 dark:text-white truncate">
+                            Loading...</p>
+                        <p id="ctx-role" class="text-xs text-slate-500 truncate">...</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="toggleTheme()"
+                        class="flex-1 px-3 py-2 text-xs font-bold rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition-colors"><i
+                            class="bi bi-moon-stars-fill dark:hidden"></i><i
+                            class="bi bi-sun-fill hidden dark:inline text-white"></i></button>
+                    <a href="/auth/logout"
+                        class="flex-1 px-3 py-2 text-xs font-bold rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 transition-colors text-center"><i
+                            class="bi bi-box-arrow-right"></i></a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <header
+                class="glass-strong border-b border-slate-200/50 dark:border-slate-800/50 px-8 py-4 flex items-center justify-between sticky top-0 z-50">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 dark:text-white" style="font-family: 'Outfit';">Reports
+                        Center</h2>
+                    <p class="text-sm text-slate-500">Deep analytical insights for your business</p>
+                </div>
+                <div class="text-right">
+                    <p id="ctx-store-label" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Enterprise</p>
+                    <p id="ctx-store-name" class="text-sm font-bold text-slate-900 dark:text-white">...</p>
+                </div>
+            </header>
+
+            <div class="p-8 space-y-6">
+                <!-- Action Bar -->
+                <div
+                    class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800">
+                    <div class="flex flex-wrap gap-2">
+                        <select id="branchFilter" onchange="refreshReports()"
+                            class="hidden px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold uppercase tracking-wider bg-slate-50 dark:bg-slate-800 dark:border-slate-700">
+                            <option value="">All Branches</option>
+                        </select>
+                        <select id="timeFilter" onchange="refreshReports()"
+                            class="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold uppercase tracking-wider bg-slate-50 dark:bg-slate-800 dark:border-slate-700">
+                            <option value="today">Today</option>
+                            <option value="week">Past 7 Days</option>
+                            <option value="month" selected>Past 30 Days</option>
+                            <option value="year">Full Year</option>
+                        </select>
+                    </div>
+                    <button onclick="downloadCurrentView()"
+                        class="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-xs flex items-center gap-2 shadow-lg shadow-indigo-600/20"><i
+                            class="bi bi-download"></i> EXPORT VIEW</button>
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bento-card p-6">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Revenue
+                        </p>
+                        <h3 id="statRevenue" class="text-2xl font-black text-slate-900 dark:text-white">₹0.00</h3>
+                        <div id="trendRev"
+                            class="mt-2 text-[10px] font-black uppercase flex items-center gap-1 text-emerald-600"><i
+                                class="bi bi-arrow-up-right"></i> <span>0%</span></div>
+                    </div>
+                    <div class="bento-card p-6">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Gross Profit</p>
+                        <h3 id="statProfit" class="text-2xl font-black text-emerald-600">₹0.00</h3>
+                        <p id="statMargin" class="text-[10px] text-slate-400 font-bold mt-1">Margin: 0%</p>
+                    </div>
+                    <div class="bento-card p-6">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Bills Generated
+                        </p>
+                        <h3 id="statBills" class="text-2xl font-black text-slate-900 dark:text-white">0</h3>
+                        <p id="avgTicket" class="text-[10px] text-slate-400 font-bold mt-1">Avg. Ticket: ₹0</p>
+                    </div>
+                    <div class="bento-card p-6">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Tax Liability
+                        </p>
+                        <h3 id="statTax" class="text-2xl font-black text-amber-600">₹0.00</h3>
+                        <p class="text-[10px] text-slate-400 font-bold mt-1">Total Collected</p>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bento-card p-8">
+                        <h3 class="text-lg font-black mb-6">Performance Trend</h3>
+                        <div class="h-[350px]"><canvas id="salesChart"></canvas></div>
+                    </div>
+                    <div class="bento-card p-8">
+                        <h3 class="text-lg font-black mb-6 text-center">Category Split</h3>
+                        <div class="h-[300px] flex items-center justify-center"><canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HQ Matrix -->
+                <div id="hq-matrix-section" class="hidden bento-card overflow-hidden">
+                    <div class="p-6 border-b border-slate-50 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50">
+                        <h3 class="text-lg font-black">Branch Performance Matrix</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr
+                                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 dark:border-slate-800">
+                                    <th class="px-8 py-4">Branch Name</th>
+                                    <th class="px-8 py-4">Revenue</th>
+                                    <th class="px-8 py-4">Profit</th>
+                                    <th class="px-8 py-4">Margin</th>
+                                    <th class="px-8 py-4">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="branchPerformanceBody" class="divide-y divide-slate-50 dark:divide-slate-800">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Export Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+                    <a href="/sales/export"
+                        class="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl flex items-center gap-4 hover:scale-[1.02] transition-transform">
+                        <div
+                            class="w-12 h-12 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-xl text-emerald-600 shadow-sm">
+                            <i class="bi bi-file-earmark-excel-fill"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-black uppercase">Sales Ledger</h4>
+                            <p class="text-[10px] font-bold text-slate-400">Download transaction data</p>
+                        </div>
+                    </a>
+                    <a href="/sales/export/products"
+                        class="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl flex items-center gap-4 hover:scale-[1.02] transition-transform">
+                        <div
+                            class="w-12 h-12 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-xl text-blue-600 shadow-sm">
+                            <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-black uppercase">Product Audit</h4>
+                            <p class="text-[10px] font-bold text-slate-400">Performance by SKU</p>
+                        </div>
+                    </a>
+                    <a href="/sales/export/tax"
+                        class="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl flex items-center gap-4 hover:scale-[1.02] transition-transform">
+                        <div
+                            class="w-12 h-12 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-xl text-amber-600 shadow-sm">
+                            <i class="bi bi-file-earmark-check-fill"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-black uppercase">Tax Report</h4>
+                            <p class="text-[10px] font-bold text-slate-400">GST/VAT audit export</p>
+                        </div>
+                    </a>
+                    <a href="/sales/export/inventory"
+                        class="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl flex items-center gap-4 hover:scale-[1.02] transition-transform">
+                        <div
+                            class="w-12 h-12 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-xl text-purple-600 shadow-sm">
+                            <i class="bi bi-boxes"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-black uppercase">Stock Value</h4>
+                            <p class="text-[10px] font-bold text-slate-400">Inventory dollar valuation</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // System JS
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            html.classList.remove(isDark ? 'dark' : 'light');
+            html.classList.add(isDark ? 'light' : 'dark');
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+        }
+
+        let GLOBAL_CTX = null;
+        async function loadSessionContext() {
+            try {
+                const res = await fetch('/api/session-context');
+                GLOBAL_CTX = await res.json();
+                document.getElementById('ctx-chain-name').textContent = GLOBAL_CTX.store_name || GLOBAL_CTX.chain_name || 'INVPRO';
+                document.getElementById('ctx-username').textContent = GLOBAL_CTX.username;
+                document.getElementById('ctx-role').textContent = GLOBAL_CTX.role === 'business_admin' ? 'HQ Admin' : (GLOBAL_CTX.role === 'branch_admin' ? 'Manager' : 'Staff');
+                document.getElementById('user-avatar').textContent = GLOBAL_CTX.username[0].toUpperCase();
+                document.getElementById('ctx-store-name').textContent = GLOBAL_CTX.store_name || 'HQ';
+                renderSidebar(GLOBAL_CTX.role);
+
+                if (GLOBAL_CTX.role === 'business_admin') {
+                    document.getElementById('branchFilter').classList.remove('hidden');
+                    document.getElementById('hq-matrix-section').classList.remove('hidden');
+                    loadBranches();
+                }
+                refreshReports();
+            } catch (e) { console.error(e); }
+        }
+
+        function renderSidebar(role) {
+            const nav = document.getElementById('sidebar-nav');
+            const path = window.location.pathname;
+
+            let menu = [];
+            if (role === 'business_admin') {
+                menu = [
+                    { name: 'Home', icon: 'bi-grid-fill', url: '/' },
+                    { name: 'Master Product List', icon: 'bi-box-seam-fill', url: '/inventory/global' },
+                    { name: 'Product Categories', icon: 'bi-tags-fill', url: '/inventory/categories' },
+                    { name: 'Shops & Branches', icon: 'bi-building', url: '/settings/' },
+                    { name: 'Tax Rates', icon: 'bi-percent', url: '/settings/tax' },
+                    { name: 'Staff Users', icon: 'bi-people-fill', url: '/users/' },
+                    { name: 'Sales Reports', icon: 'bi-graph-up', url: '/sales/reports' },
+                ];
+            } else if (role === 'branch_admin') {
+                menu = [
+                    { name: 'Home', icon: 'bi-grid-fill', url: '/' },
+                    { name: 'Shop Stock', icon: 'bi-box-seam', url: '/inventory/products' },
+                    { name: 'Billing Counter', icon: 'bi-cart4', url: '/billing/' },
+                    { name: 'My Team', icon: 'bi-people', url: '/users/' },
+                    { name: 'Reports', icon: 'bi-graph-up', url: '/sales/reports' }
+                ];
+            } else {
+                menu = [
+                    { name: 'Billing Counter', icon: 'bi-cart4', url: '/billing/' },
+                    { name: 'Check Stock', icon: 'bi-eye', url: '/inventory/products' }
+                ];
+            }
+
+            nav.innerHTML = menu.map(item => `
+                <a href="${item.url}" class="nav-item ${path === item.url ? 'active' : ''}">
+                    <i class="bi ${item.icon}"></i>
+                    <span>${item.name}</span>
+                </a>
+            `).join('');
+        }
+
+        async function loadBranches() {
+            const res = await fetch('/settings/api/branches');
+            const branches = await res.json();
+            const select = document.getElementById('branchFilter');
+            branches.forEach(b => select.innerHTML += `<option value="${b.id}">${b.name}</option>`);
+        }
+
+        let salesChart, categoryChart;
+        async function refreshReports() {
+            const time = document.getElementById('timeFilter').value;
+            const branch = document.getElementById('branchFilter')?.value || '';
+            const res = await fetch(`/sales/api/analytics?filter=${time}&branch=${branch}`);
+            const data = await res.json();
+
+            updateKPIs(data);
+            if (data.branches) updateBranchTable(data.branches);
+
+            const chartRes = await fetch(`/sales/api/charts?filter=${time}&branch=${branch}`);
+            const chartData = await chartRes.json();
+            renderSalesChart(chartData);
+            renderCategoryChart(data.category_stats || []);
+        }
+
+        function updateKPIs(data) {
+            document.getElementById('statRevenue').textContent = `₹${data.revenue.toLocaleString()}`;
+            document.getElementById('statProfit').textContent = `₹${data.profit.toLocaleString()}`;
+            document.getElementById('statBills').textContent = data.transactions;
+            document.getElementById('statTax').textContent = `₹${(data.tax || 0).toLocaleString()}`;
+            document.getElementById('statMargin').textContent = `Margin: ${data.revenue > 0 ? ((data.profit / data.revenue) * 100).toFixed(1) : 0}%`;
+            document.getElementById('avgTicket').textContent = `Avg. Ticket: ₹${data.transactions > 0 ? (data.revenue / data.transactions).toFixed(0) : 0}`;
+        }
+
+        function updateBranchTable(branches) {
+            const body = document.getElementById('branchPerformanceBody');
+            body.innerHTML = branches.map(b => `
+                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                    <td class="px-8 py-4 font-black">${b.name}</td>
+                    <td class="px-8 py-4">₹${b.revenue.toLocaleString()}</td>
+                    <td class="px-8 py-4 text-emerald-600 font-bold">₹${b.profit.toLocaleString()}</td>
+                    <td class="px-8 py-4 font-black text-indigo-600">${b.revenue > 0 ? ((b.profit / b.revenue) * 100).toFixed(1) : 0}%</td>
+                    <td class="px-8 py-4"><span class="px-2 py-1 bg-emerald-100 text-emerald-600 rounded-lg text-[10px] font-black uppercase">Active</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function renderSalesChart(data) {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            if (salesChart) salesChart.destroy();
+            salesChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [
+                        { label: 'Revenue', data: data.revenue, borderColor: '#6366f1', borderWidth: 3, tension: 0.4, fill: true, backgroundColor: 'rgba(99, 102, 241, 0.05)' },
+                        { label: 'Profit', data: data.profit, borderColor: '#10b981', borderWidth: 3, tension: 0.4 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true } } }
+            });
+        }
+
+        function renderCategoryChart(cats) {
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            if (categoryChart) categoryChart.destroy();
+            categoryChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: { labels: cats.map(c => c.name), datasets: [{ data: cats.map(c => c.revenue), backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, font: { size: 10, weight: 'bold' } } } } }
+            });
+        }
+
+        function downloadCurrentView() {
+            const time = document.getElementById('timeFilter').value;
+            const branch = document.getElementById('branchFilter')?.value || '';
+            window.location.href = `/sales/export?filter=${time}&store_id=${branch}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.classList.add(theme);
+            loadSessionContext();
+        });
+    </script>
+</body>
+
+</html>
